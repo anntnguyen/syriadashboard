@@ -1,0 +1,117 @@
+<html>
+  <head>
+
+    <script type="text/javascript" src="https://rawgithub.com/novus/nvd3/master/lib/d3.v3.js">
+    </script>
+    <script type="text/javascript" src="https://rawgithub.com/novus/nvd3/master/lib/d3.v3.js">
+    </script>
+    <script src="https://rawgithub.com/novus/nvd3/master/nv.d3.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/utils.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/tooltip.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/models/legend.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/models/axis.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/models/scatter.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/models/line.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/models/historicalBar.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/models/linePlusBarChart.js"></script>
+
+    <link rel="stylesheet" href="https://rawgithub.com/novus/nvd3/master/src/nv.d3.css"/>
+  </head>
+  <body>
+    <div id="chart1" class='with-3d-shadow with-transitions'>
+      <svg></svg>
+    </div>
+
+    <script type="text/javascript">
+      var testdata = [
+          {
+            "key" : "Deaths per month" ,
+            "bar": true,
+            "color": "#52B9E1",
+            "values" : [
+              ["3/1/2011", 119],
+["4/1/2011", 724],
+["5/1/2011", 557],
+["6/1/2011", 528],
+["7/1/2011", 441],
+["8/1/2011", 692],
+["9/1/2011", 519],
+["10/1/2011", 570],
+["11/1/2011", 800],
+["12/1/2011", 1107],
+["1/1/2012", 1177],
+["2/1/2012", 2520],
+["3/1/2012", 2354],
+["4/1/2012", 1977],
+["5/1/2012", 1437],
+["6/1/2012", 2663],
+["7/1/2012", 4319],
+["8/1/2012", 6295],
+["9/1/2012", 5439],
+["10/1/2012", 4941],
+["11/1/2012", 4155],
+["12/1/2012", 4557],
+["1/1/2013", 4263],
+["2/1/2013", 4014],
+["3/1/2013", 4284],
+["4/1/2013", 4522],
+["5/1/2013", 3858],
+["6/1/2013", 3037],
+["7/1/2013", 3188],
+["8/1/2013", 4723],
+["9/1/2013", 2920],
+["10/1/2013", 2974],
+["11/1/2013", 2763],
+["12/1/2013", 3684],
+["1/1/2014", 3627],
+["2/1/2014", 3433],
+["3/1/2014", 1099]
+            ]
+          },
+          
+          
+      ].map(function(series) {
+        series.values = series.values.map(function(d) { return {x: d[0], y: d[1] } });
+        return series;
+      });
+
+    var chart;
+
+    nv.addGraph(function() {
+        chart = nv.models.linePlusBarChart()
+            .margin({top: 30, right: 60, bottom: 50, left: 70})
+            .x(function(d,i) { return i })
+            .color(d3.scale.category10().range());
+
+        chart.xAxis.tickFormat(function(d) {
+          var dx = testdata[0].values[d] && testdata[0].values[d].x || 0;
+          return dx || '';
+          })
+          .showMaxMin(false);
+
+        chart.y1Axis
+        	.axisLabel("Number of Deaths")
+            .tickFormat(d3.format(',f'));
+
+
+        chart.bars.forceY([0]).padData(false);
+        chart.lines.forceY([0]);
+
+        d3.select('#chart1 svg')
+            .datum(testdata)
+          .transition().duration(500).call(chart);
+
+        nv.utils.windowResize(chart.update);
+
+        chart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+    
+        
+        chart.tooltipContent(function(key,x,y) {
+		return "<center>" + "<h3>" + key + "</h3>" + "<p>" + "<strong>" + y + "</strong>" + " deaths in " + x + "</p>" + "</center>";});
+		
+
+        return chart;
+    });
+    </script>
+  </body>
+</html>
