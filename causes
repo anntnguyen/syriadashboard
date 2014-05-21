@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href="../src/nv.d3.css" rel="stylesheet" type="text/css">
+<style>
+
+body {
+  overflow-y:scroll;
+}
+
+text {
+  font: 12px sans-serif;
+}
+
+.mypiechart {
+  width: 500px;
+  border: 2px;
+}
+</style>
+<body class='with-3d-shadow with-transitions'>
+
+<h2>Top 5 Causes of Female Deaths in Syria</h2>
+<svg id="test1" class="mypiechart"></svg>
+
+
+ <script type="text/javascript" src="https://rawgithub.com/novus/nvd3/master/lib/d3.v3.js">
+    </script>
+    <script type="text/javascript" src="https://rawgithub.com/novus/nvd3/master/lib/d3.v3.js">
+    </script>
+    <script src="https://rawgithub.com/novus/nvd3/master/nv.d3.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/utils.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/tooltip.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/models/legend.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/models/axis.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/models/scatter.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/models/line.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/models/historicalBar.js"></script>
+    <script src="https://rawgithub.com/novus/nvd3/master/src/models/linePlusBarChart.js"></script>
+    
+    <link rel="stylesheet" href="nvd3syria.css"/>
+<script>
+
+  var testdata = [
+    {
+      key: "Artillery",
+      y: 57
+    },
+    {
+      key: "Gunshots",
+      y: 20
+    },
+    {
+      key: "Air Bombardment",
+      y: 11.7
+    },
+    {
+      key: "Other",
+      y: 5.2
+    },
+    
+    {
+      key: "Sniper",
+      y: 5
+    },
+    {
+      key: "Beating or Stabbing",
+      y: 1.2
+    }
+  ];
+
+ var myColors = ["#104471", "#3A87C8", "#65BDEA", "#A2D8F5", "#9F9F9F", "#D7DDDD"];
+    d3.scale.myColors = function() {
+        return d3.scale.ordinal().range(myColors);
+    };
+    
+nv.addGraph(function() {
+    var width = 500,
+        height = 500;
+
+    var chart = nv.models.pieChart()
+        .x(function(d) { return d.key })
+        .y(function(d) { return d.y })
+  		.showLabels(false)
+        .color(d3.scale.myColors().range())
+        .width(width)
+        .height(height);
+        
+
+      d3.select("#test1")
+          .datum(testdata)
+        .transition().duration(1200)
+          .attr('width', width)
+          .attr('height', height)
+          .call(chart);
+
+    chart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+    
+    chart.tooltipContent(function(key,y) {
+		return "<h3>" + key + "</h3>" + "<p>" + key + " caused " +  y + "% of female deaths " + "</p>";});
+
+    return chart;
+});
+
+</script>
